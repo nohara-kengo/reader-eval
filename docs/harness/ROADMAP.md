@@ -6,7 +6,7 @@
 
 | 観点 | 参照 (nct-ihsp-adt) | reader-eval |
 |---|---|---|
-| バックエンド | Java/Spring Boot + Maven | **Node.js + TypeScript**（フレームワークはADRで選定） |
+| アプリ構成 | フロント(Vite/React)＋別Java/Springバックエンド | **Next.js (App Router) フルスタック1本**（UI＋API route handlers、独立バックエンド無し。ランタイム Node/TS） |
 | DBマイグレーション | Liquibase (YAML) | **Prisma / Drizzle**（ADRで選定） |
 | デプロイ先 | AWS ECS/ECR + Terraform | **オンプレ Ubuntu VM + Docker + Coolify**（AWS/Terraform系は不採用） |
 | 認証 | AWS Cognito | **M365 Entra ID（SSO）** |
@@ -17,7 +17,7 @@
 
 ## 整備項目（Issue化）
 
-1. モノレポ雛形（npm workspaces / Next.js front + Node API / ルート設定）
+1. Next.js (App Router) フルスタックアプリ雛形（UI＋API route handlers、共通設定）
 2. ローカル開発環境（Docker Compose: db/api/frontend ＋ .env.example）
 3. コード品質ハーネス（ESLint/Prettier/型 + husky + lint-staged）
 4. テストハーネス（Vitest + Testing Library + Playwright + API統合）
