@@ -5,15 +5,29 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "develop"
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
       include: "scope"
+    # メジャー更新は協調アップグレードで別途対応するため、定期更新では無視する
+    # （セキュリティ更新は Dependabot security alerts 経由で別途届く）
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    # minor / patch はまとめて1つの PR に集約しノイズを減らす
+    groups:
+      npm-minor-patch:
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "develop"
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore"
+    groups:
+      actions-all:
+        patterns: ["*"]
