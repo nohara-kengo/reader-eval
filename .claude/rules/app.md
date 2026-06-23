@@ -53,6 +53,8 @@ features/
 - **API 層（route handlers / server actions）**: 入力検証 → ドメインサービス呼び出し → 結果整形。**薄く保つ**。ロジックは `lib/` / `features/*/server/` のサービスに分離する
 - Entity / DB 行をそのまま外に出さず、必要な形（DTO 相当の型）に整形して返す
 
+> **サービス層の設計（コンポーネント化）・トランザクション境界**は [`service-layer.md`](service-layer.md)、**エラーの捕捉・変換・境界・ログ**は [`error-handling.md`](error-handling.md) を正とする。
+
 ## フォーム / バリデーション
 
 - フォームは React Hook Form + Zod 等の利用を推奨する（**具体的な選定はチームに委ねる**）
@@ -133,6 +135,9 @@ PR 作成前に lint / typecheck / test / build をすべて通すこと。
 
 ## 関連
 
+- サービス層 / トランザクション: [`service-layer.md`](service-layer.md)
+- エラーハンドリング: [`error-handling.md`](error-handling.md)
+- API / エラー形式: [`api-response.md`](api-response.md)
 - 共通化・パーツ化: [`shared.md`](shared.md)
 - 命名規約: [`naming-conventions.md`](naming-conventions.md)
 - PR 運用: [`git-workflow.md`](git-workflow.md)

@@ -123,8 +123,12 @@ API は独立サーバーではなく **同一アプリの route handlers / serv
 
 横断ルールは [`.claude/rules/`](.claude/rules/) に置き、コードと同様に **Git 管理・PR レビュー必須**とする。
 
+- [`.claude/rules/app.md`](.claude/rules/app.md) — 単一 Next.js アプリの規約（ディレクトリ / データ取得 / 責務分離 / TS / テスト）
+- [`.claude/rules/service-layer.md`](.claude/rules/service-layer.md) — サービス層のコンポーネント化・**トランザクション管理**
+- [`.claude/rules/error-handling.md`](.claude/rules/error-handling.md) — **エラーハンドリング**方針（分類 / カスタムエラー型 / 捕捉・変換・境界 / ログ）
 - [`.claude/rules/api-response.md`](.claude/rules/api-response.md) — route handler の成功 / エラーレスポンス形式（`ErrorResponse` / `code` 語彙 / 例外変換方針）
 - [`.claude/rules/error-message.md`](.claude/rules/error-message.md) — 日本語エラーメッセージ文言規約
+- [`.claude/rules/shared.md`](.claude/rules/shared.md) / [`naming-conventions.md`](.claude/rules/naming-conventions.md) / [`git-workflow.md`](.claude/rules/git-workflow.md)
 
 スキルは [`.claude/skills/`](.claude/skills/)（個人ローカルの `~/.claude/` ではなくリポジトリ内）に配置する。代表例:
 
