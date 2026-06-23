@@ -29,10 +29,7 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 
-# Office 参考資料（重量バイナリは管理対象外）
-*.xlsx
-*.pptx
-*.docx
+# Windows/WSL のメタデータ
 *:Zone.Identifier
 
 # Coverage / cache
