@@ -1,0 +1,84 @@
+# 共通化・パーツ化（`shared` 配置ルール）
+
+`lib/shared/`（フレームワーク非依存のドメイン非依存ロジック）および `components/`（汎用 UI）の配置判断基準を定める。本ファイルは **「何を共通に置くか / 置かないか」** の横断判断のみを扱う。各機能領域の規約は [`app.md`](app.md) を正とする。
+
+## 1. 共通化の判断チェックリスト
+
+「共通に置くか機能内（`features/<feature>/`）に置くか」を判断する際、以下を **すべて満たす** こと。1 つでも No なら機能ディレクトリに置く。
+
+- [ ] **2 機能以上で使用される / 使用予定が明確である**（推測の「共通そう」だけで置かない）
+- [ ] **機能固有のドメインロジックを含まない**（特定の業務語彙・特定 Entity / 型に依存しない）
+- [ ] **テストが独立して書ける**（特定機能のフィクスチャや DB スキーマに依存しない）
+- [ ] **依存方向が `共通 → 機能` ではない**（共通から個別機能を import しない＝循環依存なし）
+
+依存方向のルール（厳守）:
+
+```
+[OK]   機能 A → lib/shared / components
+[OK]   機能 B → lib/shared / components
+[OK]   機能 A → 機能 A 内のサブモジュール
+[NG]   lib/shared → 機能 A
+[NG]   機能 A → 機能 B
+```
+
+共通から特定機能を参照したくなった時点で、「それは共通ではなく機能 A のヘルパー」か「共通側に抽象（インターフェース）を切るべき」のどちらか。**迷ったら機能側に置く**（後で共通へ昇格する方が、共通から戻すより安全）。原則 **2 機能目で再利用される段階** で共通へ抽出する。
+
+## 2. UI の共通化（`components/`）
+
+### 共通に置くもの
+
+| カテゴリ | 例 |
+| --- | --- |
+| 汎用 UI コンポーネント | `<Modal>` / `<ConfirmDialog>` / `<Toast>` / `<Loading>` / `<ErrorAlert>` |
+| 汎用 hooks | `usePaginatedList<T>` / `useDebounce` / `useAsync` |
+
+### 共通に置かないもの（= 機能ディレクトリへ）
+
+| 内容 | 置き場所 |
+| --- | --- |
+| 機能固有 UI（テーブル列定義 / フォーム） | `features/<feature>/components/` |
+| 機能固有 hooks | `features/<feature>/hooks/` |
+| 機能固有 API クライアント | `features/<feature>/` |
+| 機能固有 types | `features/<feature>/types.ts` |
+
+## 3. ロジックの共通化（`lib/`・`lib/shared/`）
+
+### 共通に置くもの
+
+| カテゴリ | 置き場所 / 例 |
+| --- | --- |
+| 汎用ユーティリティ | `lib/shared/`（日付 / 数値 / 文字列フォーマット / 比較 / バリデーション） |
+| 共通の型・コード値 | `lib/shared/`（ロール定数 / ステータス定数 / 共通エラー型 `ApiError` 等） |
+| DB クライアント基盤 | `lib/db/` |
+| Claude クライアント / マスキング | `lib/claude/` |
+| 認証クライアント / セッション | `lib/auth/` |
+
+### 共通に置かないもの（= 機能へ）
+
+| 内容 | 置き場所 |
+| --- | --- |
+| 機能固有のサービス / server action | `features/<feature>/server/` |
+| 機能固有のクエリ・ドメインロジック | `features/<feature>/server/` |
+| 機能固有の型 | `features/<feature>/types.ts` |
+
+## 4. バリデーション
+
+- **サーバ側検証を正**とする（[`app.md`](app.md) §フォーム / バリデーション）。クライアント側検証は UX 補助に留め、二重に業務ルールを書かない
+- 共通のバリデーションスキーマ・ユーティリティのみ `lib/shared/` に置く。機能固有スキーマは機能内に置く
+
+## 5. 肥大化時の分割
+
+- 1 ディレクトリが **20 ファイルを超えた** らサブカテゴリで分割する（例: `lib/shared/format/` / `lib/shared/validation/`）
+- 特定機能群に強く偏ったら、共通から外して機能横断モジュールへ切り出す
+- **再分割は別 PR** で行う。同一 PR に機能追加と再分割を混ぜない（[`git-workflow.md`](git-workflow.md)）
+
+## 6. 命名
+
+- ディレクトリは kebab-case、コンポーネントは PascalCase、hook は camelCase（`useXxx`）
+- 表記ゆれは [`naming-conventions.md`](naming-conventions.md) を正とする
+
+## 関連
+
+- アプリ規約: [`app.md`](app.md)
+- 命名規約: [`naming-conventions.md`](naming-conventions.md)
+- PR 運用: [`git-workflow.md`](git-workflow.md)
