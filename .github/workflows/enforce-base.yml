@@ -1,0 +1,19 @@
+name: Enforce develop -> main
+
+# git-workflow.md: main へのマージは develop 経由のみ。feature/* を main へ直接 PR させない。
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    env:
+      # untrusted な head_ref はシェルに直書きせず env 経由で渡す（script injection 対策）
+      HEAD_REF: ${{ github.head_ref }}
+    steps:
+      - name: main 宛ての PR は develop からのみ許可
+        if: github.head_ref != 'develop'
+        run: |
+          echo "::error::main への PR は develop からのみ許可されます (head=${HEAD_REF})"
+          exit 1
