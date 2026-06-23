@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 運用ルール / ワークフローの確認
+    url: https://github.com/
+    about: ブランチ運用・PRフロー・受け入れ条件の文化は .claude/rules/git-workflow.md を参照してください。
