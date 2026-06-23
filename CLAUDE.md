@@ -128,6 +128,14 @@ API は独立サーバーではなく **同一アプリの route handlers / serv
 - [`.claude/rules/error-handling.md`](.claude/rules/error-handling.md) — **エラーハンドリング**方針（分類 / カスタムエラー型 / 捕捉・変換・境界 / ログ）
 - [`.claude/rules/api-response.md`](.claude/rules/api-response.md) — route handler の成功 / エラーレスポンス形式（`ErrorResponse` / `code` 語彙 / 例外変換方針）
 - [`.claude/rules/error-message.md`](.claude/rules/error-message.md) — 日本語エラーメッセージ文言規約
+- [`.claude/rules/authz.md`](.claude/rules/authz.md) — 認可・RBAC（ロール / 権限マトリクス / Entra連携 / 360°匿名性）
+- [`.claude/rules/security.md`](.claude/rules/security.md) — セキュリティ・機微情報・**Claude送信前マスキング**・シークレット管理
+- [`.claude/rules/logging.md`](.claude/rules/logging.md) — 構造化ログ・**監査ログ**・相関ID・ヘルスチェック
+- [`.claude/rules/validation.md`](.claude/rules/validation.md) — 入力バリデーション（Zod / サーバ検証を正）
+- [`.claude/rules/ai.md`](.claude/rules/ai.md) — Claude 利用（モデル選定 / プロンプト管理 / コスト / フォールバック）
+- [`.claude/rules/db.md`](.claude/rules/db.md) — DB 設計・マイグレーション運用（ORM暫定Prisma / バックアップ）
+- [`.claude/rules/config.md`](.claude/rules/config.md) — 環境変数・設定規約
+- [`.claude/rules/testing.md`](.claude/rules/testing.md) — テスト戦略（Vitest / Playwright / カバレッジ）
 - [`.claude/rules/shared.md`](.claude/rules/shared.md) / [`naming-conventions.md`](.claude/rules/naming-conventions.md) / [`git-workflow.md`](.claude/rules/git-workflow.md)
 
 スキルは [`.claude/skills/`](.claude/skills/)（個人ローカルの `~/.claude/` ではなくリポジトリ内）に配置する。代表例:
