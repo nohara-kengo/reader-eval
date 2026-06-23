@@ -1,0 +1,31 @@
+// Prisma スキーマ（暫定）。ORM は暫定 Prisma（db.md / ADR 未確定）。
+// 評価ドメインのテーブルは要件確定後に追加する。まずは監査ログのみ定義（logging.md §4.3）。
+// 命名は naming-conventions.md §4 を正とする（テーブル複数形 snake_case、@map/@@map）。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 監査ログ（誰が・いつ・何を・対象）。append-only 運用（logging.md §4.5）。
+model AuditLog {
+  id         BigInt   @id @default(autoincrement())
+  occurredAt DateTime @default(now()) @map("occurred_at")
+  actorId    String   @map("actor_id")
+  action     String
+  targetType String?  @map("target_type")
+  targetId   String?  @map("target_id")
+  result     String
+  requestId  String?  @map("request_id")
+  summary    String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([actorId])
+  @@index([targetType, targetId])
+  @@index([occurredAt])
+  @@map("audit_logs")
+}

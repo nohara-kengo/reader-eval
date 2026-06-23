@@ -6,6 +6,9 @@
   "engines": {
     "node": ">=22"
   },
+  "prisma": {
+    "seed": "node --experimental-strip-types prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
