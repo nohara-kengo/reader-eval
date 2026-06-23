@@ -1,0 +1,3 @@
+# コミット時に staged ファイルへ lint/format を適用（git-workflow.md: hooks をバイパスしない）
+# typecheck はコミットを重くするため pre-commit では行わず、CI / 手動（npm run typecheck）に委ねる
+npx lint-staged
