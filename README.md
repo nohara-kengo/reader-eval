@@ -68,15 +68,16 @@ npm run dev
 
 ## 主要コマンド
 
-| コマンド                                                     | 内容                                                       |
-| ------------------------------------------------------------ | ---------------------------------------------------------- |
-| `npm run dev`                                                | 開発サーバ起動                                             |
-| `npm run build`                                              | 本番ビルド                                                 |
-| `npm run lint`                                               | ESLint                                                     |
-| `npm run typecheck`                                          | 型チェック（`tsc --noEmit`）                               |
-| `npm run test`                                               | 単体テスト（Vitest）                                       |
-| `npm run test:e2e`                                           | E2E テスト（Playwright）                                   |
-| `npm run db:migrate` / `db:deploy` / `db:seed` / `db:studio` | DB マイグレーション・seed・閲覧（Prisma。Issue #5 で導入） |
+| コマンド                                                     | 内容                                                                 |
+| ------------------------------------------------------------ | -------------------------------------------------------------------- |
+| `npm run dev`                                                | 開発サーバ起動                                                       |
+| `npm run build`                                              | 本番ビルド                                                           |
+| `npm run lint`                                               | ESLint                                                               |
+| `npm run typecheck`                                          | 型チェック（`tsc --noEmit`）                                         |
+| `npm run test`                                               | 単体テスト（Vitest）                                                 |
+| `npm run test:e2e`                                           | E2E テスト（Playwright）                                             |
+| `npm run db:up` / `db:admin` / `db:down`                     | ローカル DB(PostgreSQL) を Docker で起動 / Adminer 付きで起動 / 停止 |
+| `npm run db:migrate` / `db:deploy` / `db:seed` / `db:studio` | DB マイグレーション・seed・閲覧（Prisma。Issue #5 で導入）           |
 
 > PR 作成前に `lint` / `typecheck` / `test` / `build` をすべて通すこと。
 
@@ -105,13 +106,44 @@ npm start            # 本番サーバ起動（既定 http://localhost:3000）
 
 本アプリは **Next.js フルスタック 1 本**（独立バックエンドを持たない。UI と API route handlers を同一アプリで実装）。フロント（UI）とバックエンド（`app/api/.../route.ts`）の疎通は次の 2 通りで確認できる。
 
-- **画面から**: ブラウザで `/` を開くと「バックエンド疎通確認（/api/health）」欄に **疎通 OK（status: ok）** が表示される（UI が同一アプリの `/api/health` を fetch する）。
+- **画面から**: ブラウザで `/`（→ `/login` にリダイレクト）を開くと、ログイン画面の「バックエンド疎通確認（/api/health）」欄に **疎通 OK（status: ok）** が表示される（UI が同一アプリの `/api/health` を fetch する。開発中の暫定表示）。
 - **API を直接**:
 
   ```bash
   curl http://localhost:3000/api/health
   # => {"status":"ok"}
   ```
+
+### DB をブラウザで確認（Adminer / Prisma Studio）
+
+ローカル DB（PostgreSQL）は Docker で起動し、ブラウザで中身を確認できる（Docker が必要）。
+
+**Adminer（DB 管理 UI）**
+
+```bash
+npm run db:admin     # db + adminer を起動
+npm run db:migrate   # スキーマ適用（初回。テーブルが無いと中身が見えない）
+npm run db:seed      # 任意: サンプルデータ投入
+```
+
+ブラウザで http://localhost:8080 を開き、以下で接続する（既定値。`.env` で変更可）:
+
+| 項目     | 値            |
+| -------- | ------------- |
+| System   | PostgreSQL    |
+| Server   | `db`          |
+| Username | `dev`         |
+| Password | `dev`         |
+| Database | `reader_eval` |
+
+**Prisma Studio**
+
+```bash
+npm run db:up        # db を起動
+npm run db:studio    # http://localhost:5555 でテーブルを閲覧・編集
+```
+
+`.env` の `DATABASE_URL` は既定で `postgresql://dev:dev@localhost:5432/reader_eval`。確認後は `npm run db:down` で停止する。
 
 ---
 
