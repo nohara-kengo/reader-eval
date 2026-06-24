@@ -1,28 +1,19 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import Home from "@/app/page";
+import { describe, expect, it, vi } from "vitest";
 
-afterEach(() => {
-  vi.unstubAllGlobals();
+const redirectMock = vi.fn((path: string) => {
+  // next/navigation の redirect は内部で throw して以降の処理を止める
+  throw new Error(`REDIRECT:${path}`);
 });
 
+vi.mock("next/navigation", () => ({
+  redirect: (path: string) => redirectMock(path),
+}));
+
+const { default: Home } = await import("@/app/page");
+
 describe("Home", () => {
-  it("見出し「reader-eval」を表示する", async () => {
-    // 子コンポーネント HealthCheck が /api/health を叩くため fetch をスタブする
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({ status: "ok" }),
-      }),
-    );
-
-    render(<Home />);
-
-    expect(screen.getByRole("heading", { name: "reader-eval" })).toBeInTheDocument();
-    // HealthCheck の非同期状態更新を act() 内で確実に消化する
-    await waitFor(() => {
-      expect(screen.getByText(/疎通 OK/)).toBeInTheDocument();
-    });
+  it("ルート(/) は /login へリダイレクトする", () => {
+    expect(() => Home()).toThrow("REDIRECT:/login");
+    expect(redirectMock).toHaveBeenCalledWith("/login");
   });
 });
