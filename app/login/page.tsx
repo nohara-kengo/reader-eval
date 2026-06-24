@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { HealthCheck } from "@/features/health/components/HealthCheck";
 import { auth, signIn } from "@/lib/auth";
 
 // Auth.js のサインインエラー種別をユーザー向け日本語へ。
@@ -48,6 +49,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           Microsoft でサインイン
         </button>
       </form>
+      {/* 開発中の暫定表示: バックエンド疎通確認（後日整理） */}
+      <HealthCheck />
     </main>
   );
 }

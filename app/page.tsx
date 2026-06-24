@@ -1,11 +1,7 @@
-import { HealthCheck } from "@/features/health/components/HealthCheck";
+import { redirect } from "next/navigation";
 
+// ルート(/) はログイン画面に集約する。未認証の入口を /login に統一する。
+// （認証済みなら /login 側で /dashboard へ遷移する）
 export default function Home() {
-  return (
-    <main className="mx-auto max-w-2xl p-8">
-      <h1 className="text-2xl font-bold">reader-eval</h1>
-      <p className="mt-2 text-gray-600">リーダー研修 評価システム（Next.js フルスタック）</p>
-      <HealthCheck />
-    </main>
-  );
+  redirect("/login");
 }
