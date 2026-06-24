@@ -62,20 +62,21 @@ export const config = schema.parse(process.env);
 
 > 用途のみ記載し、**値は載せない**。実キー名は実装時に確定（[`CLAUDE.md`](../../CLAUDE.md) の暫定キーに合わせる）。
 
-| グループ | キー | 用途 | 必須 |
-| --- | --- | --- | --- |
-| DB | `DATABASE_URL` | PostgreSQL 接続文字列 | ◯ |
-| AI | `ANTHROPIC_API_KEY` | Claude API キー（**秘匿**） | ◯ |
-| AI | `ANTHROPIC_MODEL` | 既定モデル（既定 `claude-opus-4-8`） | 任意 |
-| 認証 | `AZURE_AD_TENANT_ID` | Entra ID テナント ID | ◯ |
-| 認証 | `AZURE_AD_CLIENT_ID` | アプリ（クライアント）ID | ◯ |
-| 認証 | `AZURE_AD_CLIENT_SECRET` | クライアントシークレット（**秘匿**） | ◯ |
-| アプリ | `NODE_ENV` | 実行環境（development / production / test） | 任意 |
-| アプリ | `PORT` | 待受ポート（暫定 3000） | 任意 |
-| アプリ | `APP_BASE_URL` | アプリのベース URL（SSO リダイレクト等で使用） | ◯ |
-| ログ | `LOG_LEVEL` | ログ出力レベル（[`logging.md`](logging.md)） | 任意 |
+| グループ | キー                     | 用途                                                                                       | 必須 |
+| -------- | ------------------------ | ------------------------------------------------------------------------------------------ | ---- |
+| DB       | `DATABASE_URL`           | PostgreSQL 接続文字列                                                                      | ◯    |
+| AI       | `ANTHROPIC_API_KEY`      | Claude API キー（**秘匿**）                                                                | ◯    |
+| AI       | `ANTHROPIC_MODEL`        | 既定モデル（既定 `claude-opus-4-8`）                                                       | 任意 |
+| 認証     | `AZURE_AD_TENANT_ID`     | Entra ID テナント ID                                                                       | ◯    |
+| 認証     | `AZURE_AD_CLIENT_ID`     | アプリ（クライアント）ID                                                                   | ◯    |
+| 認証     | `AZURE_AD_CLIENT_SECRET` | クライアントシークレット（**秘匿**）                                                       | ◯    |
+| 認証     | `AUTH_SECRET`            | セッション（JWT Cookie）暗号化シークレット（**秘匿**。`openssl rand -base64 32` 等で生成） | ◯    |
+| アプリ   | `NODE_ENV`               | 実行環境（development / production / test）                                                | 任意 |
+| アプリ   | `PORT`                   | 待受ポート（暫定 3000）                                                                    | 任意 |
+| アプリ   | `APP_BASE_URL`           | アプリのベース URL（SSO リダイレクト等で使用）                                             | ◯    |
+| ログ     | `LOG_LEVEL`              | ログ出力レベル（[`logging.md`](logging.md)）                                               | 任意 |
 
-- **秘匿（Secret）** マーク（`ANTHROPIC_API_KEY` / `AZURE_AD_CLIENT_SECRET`）の値はログ・レスポンスに出さない（[`logging.md`](logging.md) §5）。
+- **秘匿（Secret）** マーク（`ANTHROPIC_API_KEY` / `AZURE_AD_CLIENT_SECRET` / `AUTH_SECRET`）の値はログ・レスポンスに出さない（[`logging.md`](logging.md) §5）。
 - クライアント（ブラウザ）へ露出してよいのは公開前提の値のみ。Next.js の `NEXT_PUBLIC_` プレフィックスは **公開前提の非秘匿値に限定**し、秘匿値には絶対に付けない。
 
 ## 5. 環境別の設定（dev / 本番）と Coolify

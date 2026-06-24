@@ -11,7 +11,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: config.AUTH_SECRET,
   // DB アダプタは使わず JWT Cookie セッションとする（本 Issue では永続化しない）。
   session: { strategy: "jwt" },
-  pages: { signIn: "/login" },
+  // サインイン・エラーともに /login に集約し、技術詳細を出さず日本語で扱う（error-message.md）。
+  pages: { signIn: "/login", error: "/login" },
   providers: [
     MicrosoftEntraID({
       clientId: config.AZURE_AD_CLIENT_ID,
