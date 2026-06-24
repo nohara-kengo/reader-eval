@@ -4,16 +4,16 @@
 
 ## 参照との差分方針
 
-| 観点 | 参照 (nct-ihsp-adt) | reader-eval |
-|---|---|---|
-| アプリ構成 | フロント(Vite/React)＋別Java/Springバックエンド | **Next.js (App Router) フルスタック1本**（UI＋API route handlers、独立バックエンド無し。ランタイム Node/TS） |
-| DBマイグレーション | Liquibase (YAML) | **Prisma / Drizzle**（ADRで選定） |
-| デプロイ先 | AWS ECS/ECR + Terraform | **オンプレ Ubuntu VM + Docker + Coolify**（AWS/Terraform系は不採用） |
-| 認証 | AWS Cognito | **M365 Entra ID（SSO）** |
-| 外部公開 | ALB/CloudFront | **Cloudflare Tunnel**（特定ポートのみ） |
-| pre-commit hook | なし | **husky + lint-staged を追加**（改善） |
-| ブランチ運用 | develop→main 強制 / Squash・Merge使い分け | 同方針を踏襲 |
-| Claudeハーネス | CLAUDE.md + .claude/(rules, skills, settings) | 同構成をTS/オンプレ向けに翻案 |
+| 観点               | 参照 (nct-ihsp-adt)                             | reader-eval                                                                                                  |
+| ------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| アプリ構成         | フロント(Vite/React)＋別Java/Springバックエンド | **Next.js (App Router) フルスタック1本**（UI＋API route handlers、独立バックエンド無し。ランタイム Node/TS） |
+| DBマイグレーション | Liquibase (YAML)                                | **Prisma / Drizzle**（ADRで選定）                                                                            |
+| デプロイ先         | AWS ECS/ECR + Terraform                         | **オンプレ Ubuntu VM + Docker + Coolify**（AWS/Terraform系は不採用）                                         |
+| 認証               | AWS Cognito                                     | **M365 Entra ID（SSO）**                                                                                     |
+| 外部公開           | ALB/CloudFront                                  | **Cloudflare Tunnel**（特定ポートのみ）                                                                      |
+| pre-commit hook    | なし                                            | **husky + lint-staged を追加**（改善）                                                                       |
+| ブランチ運用       | develop→main 強制 / Squash・Merge使い分け       | 同方針を踏襲                                                                                                 |
+| Claudeハーネス     | CLAUDE.md + .claude/(rules, skills, settings)   | 同構成をTS/オンプレ向けに翻案                                                                                |
 
 ## 整備項目（Issue化）
 
@@ -31,7 +31,8 @@
 ## ハーネス対象外（後続のアプリ機能Issue）
 
 - M365 Entra ID 認証の実装本体
-- Claude API 連携の実装本体（機微情報マスキング含む。3.6/3.7参照）
 - 評価機能（自己評価/360°/集計/出力）各機能
+
+> 注: アプリからの Claude/Anthropic API 連携は**実装しない**方針に変更（[`ai.md`](../../.claude/rules/ai.md)）。
 
 > 進捗は GitHub Issues（label: `harness`）で管理。Epicに一覧を集約。
