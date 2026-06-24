@@ -10,10 +10,10 @@ paths: "app/**,lib/**,components/**,features/**,.claude/rules/**"
 
 ## 1. エラーの分類
 
-| 区分 | 内容 | 例 | 扱い |
-| --- | --- | --- | --- |
-| ドメインエラー（想定内） | 業務的に起こり得る | バリデーション / 権限 / 状態遷移 / not found / 競合 | 専用エラー型で投げ、適切な HTTP に変換 |
-| システムエラー（想定外） | 基盤・バグ | DB 障害 / 外部 API 失敗 / 予期せぬ例外 | 500 に変換。詳細はログのみ、ユーザーには汎用文言 |
+| 区分                     | 内容               | 例                                                  | 扱い                                             |
+| ------------------------ | ------------------ | --------------------------------------------------- | ------------------------------------------------ |
+| ドメインエラー（想定内） | 業務的に起こり得る | バリデーション / 権限 / 状態遷移 / not found / 競合 | 専用エラー型で投げ、適切な HTTP に変換           |
+| システムエラー（想定外） | 基盤・バグ         | DB 障害 / 外部 API 失敗 / 予期せぬ例外              | 500 に変換。詳細はログのみ、ユーザーには汎用文言 |
 
 ## 2. カスタムエラー型
 
@@ -22,16 +22,34 @@ paths: "app/**,lib/**,components/**,features/**,.claude/rules/**"
 ```ts
 // lib/shared/errors.ts（雛形）
 export abstract class AppError extends Error {
-  abstract readonly code: string;       // 例: "VALIDATION_ERROR"
-  abstract readonly status: number;     // 例: 400
+  abstract readonly code: string; // 例: "VALIDATION_ERROR"
+  abstract readonly status: number; // 例: 400
   readonly errors?: Record<string, string>; // フィールド別（任意）
 }
-export class ValidationError extends AppError { code = "VALIDATION_ERROR"; status = 400; /* ... */ }
-export class UnauthorizedError extends AppError { code = "UNAUTHORIZED"; status = 401; }
-export class ForbiddenError extends AppError { code = "FORBIDDEN"; status = 403; }
-export class NotFoundError extends AppError { code = "NOT_FOUND"; status = 404; }
-export class ConflictError extends AppError { code = "CONFLICT"; status = 409; }
-export class ExternalServiceError extends AppError { code = "INTERNAL_ERROR"; status = 500; }
+export class ValidationError extends AppError {
+  code = "VALIDATION_ERROR";
+  status = 400; /* ... */
+}
+export class UnauthorizedError extends AppError {
+  code = "UNAUTHORIZED";
+  status = 401;
+}
+export class ForbiddenError extends AppError {
+  code = "FORBIDDEN";
+  status = 403;
+}
+export class NotFoundError extends AppError {
+  code = "NOT_FOUND";
+  status = 404;
+}
+export class ConflictError extends AppError {
+  code = "CONFLICT";
+  status = 409;
+}
+export class ExternalServiceError extends AppError {
+  code = "INTERNAL_ERROR";
+  status = 500;
+}
 ```
 
 - サービス層（[`service-layer.md`](service-layer.md)）は**ドメインエラーを投げる**。意味づけは呼び出し側で行わせる
@@ -49,7 +67,7 @@ export class ExternalServiceError extends AppError { code = "INTERNAL_ERROR"; st
 // app/api/.../route.ts（イメージ）
 export const POST = withErrorHandler(async (req) => {
   const input = parse(SchemaZod, await req.json()); // 失敗時 ValidationError
-  const result = await someService(db, input);       // ドメインエラーを投げ得る
+  const result = await someService(db, input); // ドメインエラーを投げ得る
   return Response.json(result, { status: 201 });
 });
 ```
@@ -66,11 +84,11 @@ export const POST = withErrorHandler(async (req) => {
 - **内部情報（スタック・SQL・トークン等）はログのみ**。レスポンス・画面には出さない
 - 評価入力 / 閲覧 / エクスポート等の操作は別途**監査ログ**が必要（→ 監査・ログ規約は別途プラン）
 
-## 6. 外部サービス失敗（Claude / DB / Entra / メール）
+## 6. 外部サービス失敗（DB / Entra / メール）
 
 - **タイムアウト必須**・リトライ（指数バックオフ・回数上限）。[`service-layer.md`](service-layer.md) §4 に従う
-- Claude 失敗時は**機能を止めない**フォールバック（後で再実行 / 当該支援機能のみ無効化）を検討する
 - ユーザー向けは「〜に失敗しました」、原因はログへ
+- （アプリは外部 LLM API（Claude/Anthropic 等）を呼ばない。[`ai.md`](ai.md)）
 
 ## 7. 禁止事項
 

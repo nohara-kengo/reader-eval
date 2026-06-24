@@ -1,4 +1,4 @@
-# アプリケーション規約（Next.js App Router / TypeScript / Tailwind / PostgreSQL / Claude）
+# アプリケーション規約（Next.js App Router / TypeScript / Tailwind / PostgreSQL）
 
 reader-eval は **Next.js（App Router）フルスタック1本** の構成。UI は SSR（Server Components 中心）、API は同一アプリ内の **route handlers（`app/api/...`）/ server actions** で実装する。**独立したバックエンドサービス（Express / Nest 等）は持たない。**
 
@@ -8,7 +8,7 @@ reader-eval は **Next.js（App Router）フルスタック1本** の構成。UI
 - **フレームワーク**: Next.js（App Router）
 - **スタイル**: Tailwind CSS のみ
 - **DB**: PostgreSQL。ORM / マイグレーションは Prisma か Drizzle を **ADR で選定予定（未確定）**。決定までは ADR を正とする
-- **AI**: Claude（Anthropic API、`@anthropic-ai/sdk`、既定 `claude-opus-4-8`）。**Next.js のサーバ側からのみ**呼ぶ
+- **AI**: **アプリからは利用しない**（Claude / Anthropic API を呼ばない）。Claude は開発者ツールのみ（[`ai.md`](ai.md)）
 - **認証**: M365 Entra ID（SSO）
 - **テスト**: Vitest
 
@@ -22,9 +22,8 @@ app/
 └── api/
     └── <resource>/route.ts   # route handlers（API 層）
 
-lib/                          # ドメイン・サービス・各種クライアント
+lib/                          # ドメイン・サービス・各種クライアント（AI/Claude クライアントは持たない）
 ├── db/                       # DB クライアント / クエリ（Prisma or Drizzle）
-├── claude/                   # Anthropic クライアント / プロンプト / マスキング
 ├── auth/                     # Entra ID 認証クライアント / セッション
 └── shared/                   # 機能横断の汎用ロジック（shared.md 参照）
 
@@ -38,7 +37,7 @@ features/
 ```
 
 - 新規実装は **`features/<feature>/`** で開始する
-- ドメインロジック・外部サービス連携（DB / Claude / Entra）は `lib/` または `features/<feature>/server/` に置き、UI コンポーネントに直書きしない
+- ドメインロジック・外部サービス連携（DB / Entra）は `lib/` または `features/<feature>/server/` に置き、UI コンポーネントに直書きしない
 
 ## データ取得・更新
 
@@ -78,12 +77,10 @@ features/
 - ガード節で早期リターン、ネストを浅く。マジックナンバーは定数化
 - **コメントは日本語**
 
-## Claude（Anthropic API）連携
+## AI（Claude / Anthropic API）
 
-- Anthropic クライアントは `lib/claude/` に集約し、**サーバ側からのみ**呼ぶ（API キーをクライアントへ露出しない）
-- 既定モデルは `claude-opus-4-8`
-- **機微情報はマスキング**してからプロンプトに渡す（評価対象者の個人情報等）
-- 外部 API 呼び出しはタイムアウト・エラーハンドリングを必須にする
+- **アプリは Claude / Anthropic API を呼ばない**。route handlers / server actions / `lib/` から外部 LLM API を叩かず、`@anthropic-ai/sdk` 等の依存も追加しない。
+- AI による自動評価支援は現状スコープ外。Claude は開発者が使うツールとしてのみ用いる。詳細は [`ai.md`](ai.md) を正とする。
 
 ## 認証（Entra ID）
 
@@ -99,7 +96,7 @@ npm test -- features/score/ScoreForm.test.tsx   # 特定ファイル
 
 - **1 受け入れ条件 = 1 テスト**（最低限）
 - 正常系 + 異常系 + Edge ケースを網羅
-- 外部依存（DB / Claude / Entra）はモックする（実 API を叩かない）
+- 外部依存（DB / Entra）はモックする（実 API を叩かない）
 - テスト名は日本語可
 
 ## 開発コマンド
@@ -124,7 +121,7 @@ PR 作成前に lint / typecheck / test / build をすべて通すこと。
 ## 禁止事項
 
 - 独立したバックエンドサービス（Express / Nest 等）の導入
-- Anthropic API キー / Entra シークレットのクライアント露出、機微情報の未マスキング送信
+- Entra シークレットのクライアント露出、アプリからの外部 LLM API（Claude/Anthropic 等）呼び出し
 - `any` 型 / `var`
 - UI コンポーネントへの `fetch` 直書き・ビジネスロジック直書き
 - Server Component / クライアントへの DB 接続・シークレットの露出

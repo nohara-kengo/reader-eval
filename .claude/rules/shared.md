@@ -27,39 +27,38 @@
 
 ### 共通に置くもの
 
-| カテゴリ | 例 |
-| --- | --- |
+| カテゴリ               | 例                                                                       |
+| ---------------------- | ------------------------------------------------------------------------ |
 | 汎用 UI コンポーネント | `<Modal>` / `<ConfirmDialog>` / `<Toast>` / `<Loading>` / `<ErrorAlert>` |
-| 汎用 hooks | `usePaginatedList<T>` / `useDebounce` / `useAsync` |
+| 汎用 hooks             | `usePaginatedList<T>` / `useDebounce` / `useAsync`                       |
 
 ### 共通に置かないもの（= 機能ディレクトリへ）
 
-| 内容 | 置き場所 |
-| --- | --- |
+| 内容                                     | 置き場所                         |
+| ---------------------------------------- | -------------------------------- |
 | 機能固有 UI（テーブル列定義 / フォーム） | `features/<feature>/components/` |
-| 機能固有 hooks | `features/<feature>/hooks/` |
-| 機能固有 API クライアント | `features/<feature>/` |
-| 機能固有 types | `features/<feature>/types.ts` |
+| 機能固有 hooks                           | `features/<feature>/hooks/`      |
+| 機能固有 API クライアント                | `features/<feature>/`            |
+| 機能固有 types                           | `features/<feature>/types.ts`    |
 
 ## 3. ロジックの共通化（`lib/`・`lib/shared/`）
 
 ### 共通に置くもの
 
-| カテゴリ | 置き場所 / 例 |
-| --- | --- |
-| 汎用ユーティリティ | `lib/shared/`（日付 / 数値 / 文字列フォーマット / 比較 / バリデーション） |
-| 共通の型・コード値 | `lib/shared/`（ロール定数 / ステータス定数 / 共通エラー型 `ApiError` 等） |
-| DB クライアント基盤 | `lib/db/` |
-| Claude クライアント / マスキング | `lib/claude/` |
-| 認証クライアント / セッション | `lib/auth/` |
+| カテゴリ                      | 置き場所 / 例                                                             |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| 汎用ユーティリティ            | `lib/shared/`（日付 / 数値 / 文字列フォーマット / 比較 / バリデーション） |
+| 共通の型・コード値            | `lib/shared/`（ロール定数 / ステータス定数 / 共通エラー型 `ApiError` 等） |
+| DB クライアント基盤           | `lib/db/`                                                                 |
+| 認証クライアント / セッション | `lib/auth/`                                                               |
 
 ### 共通に置かないもの（= 機能へ）
 
-| 内容 | 置き場所 |
-| --- | --- |
-| 機能固有のサービス / server action | `features/<feature>/server/` |
-| 機能固有のクエリ・ドメインロジック | `features/<feature>/server/` |
-| 機能固有の型 | `features/<feature>/types.ts` |
+| 内容                               | 置き場所                      |
+| ---------------------------------- | ----------------------------- |
+| 機能固有のサービス / server action | `features/<feature>/server/`  |
+| 機能固有のクエリ・ドメインロジック | `features/<feature>/server/`  |
+| 機能固有の型                       | `features/<feature>/types.ts` |
 
 ## 4. バリデーション
 

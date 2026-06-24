@@ -4,14 +4,14 @@
 
 リーダー研修 評価システム（reader-eval）。社内向けの研修評価ツール。
 
-研修参加者（リーダー候補）の評価データを管理し、Claude（Anthropic API）を用いた評価支援・要約・分析を行う内部システム。
+研修参加者（リーダー候補）の評価データを管理する社内向け評価システム。**アプリは Claude / Anthropic API を呼ばず**、AI による自動評価支援は現状スコープ外（Claude は開発者が使うツールとしてのみ用いる）。
 
 ## 技術スタック
 
 - **アーキテクチャ**: **Next.js（App Router）フルスタック 1 本**。UI は SSR、API は同一アプリの route handlers（`app/api/...`）/ server actions として実装する。**独立したバックエンドは持たない**。
 - **言語 / UI**: TypeScript（`strict`）/ Tailwind CSS / Node.js 22
 - **データベース**: PostgreSQL（ORM は Prisma または Drizzle。**選定は ADR で決定＝未確定**）
-- **AI**: Claude（Anthropic API、`@anthropic-ai/sdk`、既定モデル `claude-opus-4-8`）
+- **AI**: **システムからは利用しない**（アプリは Claude / Anthropic API を実行時に呼ばない）。Claude は開発者が使うツールとしてのみ用いる（[`.claude/rules/ai.md`](.claude/rules/ai.md)）
 - **認証**: Microsoft 365 Entra ID（SSO）
 - **インフラ**: オンプレ IDC、Docker + Coolify、Cloudflare Tunnel
   - デプロイ: `main` → 本番環境 / `dev` → 開発環境
@@ -20,12 +20,12 @@
 
 ### Docker Compose サービス
 
-| サービス | 説明 | 備考 |
-| --- | --- | --- |
-| `web` | Next.js（UI + API route handlers） | アプリ本体 |
-| `db` | PostgreSQL | 開発用 DB |
-| `adminer` | DB 管理 UI | 任意 |
-| `mailhog` | メール送信テスト | 任意 |
+| サービス  | 説明                               | 備考       |
+| --------- | ---------------------------------- | ---------- |
+| `web`     | Next.js（UI + API route handlers） | アプリ本体 |
+| `db`      | PostgreSQL                         | 開発用 DB  |
+| `adminer` | DB 管理 UI                         | 任意       |
+| `mailhog` | メール送信テスト                   | 任意       |
 
 ### 起動・停止
 
@@ -54,9 +54,9 @@ npm run build      # 本番ビルド
 主な変数（実際のキー名は実装時に確定）:
 
 - `DATABASE_URL` — PostgreSQL 接続文字列
-- `ANTHROPIC_API_KEY` — Claude API キー
-- `ANTHROPIC_MODEL` — 既定 `claude-opus-4-8`
+- `AUTH_SECRET` — セッション（JWT Cookie）暗号化シークレット
 - Entra ID（M365 SSO）: `AZURE_AD_TENANT_ID` / `AZURE_AD_CLIENT_ID` / `AZURE_AD_CLIENT_SECRET` 等
+- ※ アプリは Claude を呼ばないため `ANTHROPIC_*` は不要
 
 ## ディレクトリ概観
 
@@ -67,7 +67,7 @@ app/
   (routes)/          # 画面（SSR / Server Components）
   api/.../route.ts   # API route handlers（同一アプリ内）
   actions/           # server actions
-lib/                 # ドメインロジック / DB アクセス / Claude クライアント
+lib/                 # ドメインロジック / DB アクセス / 認証クライアント
 components/           # UI コンポーネント（Tailwind）
 prisma/ or drizzle/  # スキーマ・マイグレーション（ORM 選定後）
 .claude/
@@ -129,10 +129,10 @@ API は独立サーバーではなく **同一アプリの route handlers / serv
 - [`.claude/rules/api-response.md`](.claude/rules/api-response.md) — route handler の成功 / エラーレスポンス形式（`ErrorResponse` / `code` 語彙 / 例外変換方針）
 - [`.claude/rules/error-message.md`](.claude/rules/error-message.md) — 日本語エラーメッセージ文言規約
 - [`.claude/rules/authz.md`](.claude/rules/authz.md) — 認可・RBAC（ロール / 権限マトリクス / Entra連携 / 360°匿名性）
-- [`.claude/rules/security.md`](.claude/rules/security.md) — セキュリティ・機微情報・**Claude送信前マスキング**・シークレット管理
+- [`.claude/rules/security.md`](.claude/rules/security.md) — セキュリティ・機微情報・シークレット管理
 - [`.claude/rules/logging.md`](.claude/rules/logging.md) — 構造化ログ・**監査ログ**・相関ID・ヘルスチェック
 - [`.claude/rules/validation.md`](.claude/rules/validation.md) — 入力バリデーション（Zod / サーバ検証を正）
-- [`.claude/rules/ai.md`](.claude/rules/ai.md) — Claude 利用（モデル選定 / プロンプト管理 / コスト / フォールバック）
+- [`.claude/rules/ai.md`](.claude/rules/ai.md) — AI 方針（**アプリは Claude/Anthropic API を呼ばない**。Claude は開発者ツールのみ）
 - [`.claude/rules/db.md`](.claude/rules/db.md) — DB 設計・マイグレーション運用（ORM暫定Prisma / バックアップ）
 - [`.claude/rules/config.md`](.claude/rules/config.md) — 環境変数・設定規約
 - [`.claude/rules/testing.md`](.claude/rules/testing.md) — テスト戦略（Vitest / Playwright / カバレッジ）
@@ -140,8 +140,8 @@ API は独立サーバーではなく **同一アプリの route handlers / serv
 
 スキルは [`.claude/skills/`](.claude/skills/)（個人ローカルの `~/.claude/` ではなくリポジトリ内）に配置する。代表例:
 
-| スキル | 役割 |
-| --- | --- |
+| スキル       | 役割                                     |
+| ------------ | ---------------------------------------- |
 | `exec-issue` | Issue → 設計 → TDD → PR を一気通貫で実行 |
 
 権限・拒否設定は [`.claude/settings.json`](.claude/settings.json) を参照。

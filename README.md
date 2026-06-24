@@ -28,19 +28,19 @@
 
 **Next.js（App Router）フルスタック 1 本**で構成する（独立したバックエンドは持たない。UI と API route handlers / server actions を同一アプリで実装）。
 
-| 区分           | 採用技術                                                                       |
-| -------------- | ------------------------------------------------------------------------------ |
-| フレームワーク | Next.js (App Router / SSR) ・ TypeScript（strict）・ React 19                  |
-| スタイリング   | Tailwind CSS                                                                   |
-| API            | route handlers（`app/api/**/route.ts`）/ server actions                        |
-| DB / ORM       | PostgreSQL ＋ Prisma（スキーマは Issue #5 で導入）                             |
-| バリデーション | Zod（サーバ側検証を正とする）                                                  |
-| AI / LLM       | Claude（Anthropic API）/ 既定 `claude-opus-4-8` / SDK `@anthropic-ai/sdk`      |
-| ログ           | pino（構造化ログ）                                                             |
-| 認証           | M365（Microsoft Entra ID）SSO                                                  |
-| テスト         | Vitest + Testing Library（unit）/ Playwright（e2e）                            |
-| 品質           | ESLint / Prettier / tsc ・ husky + lint-staged                                 |
-| インフラ       | オンプレ Ubuntu VM + Docker、Coolify（CI/CD）、Cloudflare Tunnel（必要時のみ） |
+| 区分           | 採用技術                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| フレームワーク | Next.js (App Router / SSR) ・ TypeScript（strict）・ React 19                              |
+| スタイリング   | Tailwind CSS                                                                               |
+| API            | route handlers（`app/api/**/route.ts`）/ server actions                                    |
+| DB / ORM       | PostgreSQL ＋ Prisma（スキーマは Issue #5 で導入）                                         |
+| バリデーション | Zod（サーバ側検証を正とする）                                                              |
+| AI / LLM       | **システムからは利用しない**（アプリは Claude/Anthropic API を呼ばない。開発者ツールのみ） |
+| ログ           | pino（構造化ログ）                                                                         |
+| 認証           | M365（Microsoft Entra ID）SSO                                                              |
+| テスト         | Vitest + Testing Library（unit）/ Playwright（e2e）                                        |
+| 品質           | ESLint / Prettier / tsc ・ husky + lint-staged                                             |
+| インフラ       | オンプレ Ubuntu VM + Docker、Coolify（CI/CD）、Cloudflare Tunnel（必要時のみ）             |
 
 ---
 

@@ -26,15 +26,15 @@
 
 ## 3. コード命名
 
-| 対象 | 規約 |
-| --- | --- |
-| クラス / コンポーネント / 型 | PascalCase |
-| メソッド / 関数 / 変数 | camelCase |
-| 定数 | UPPER_SNAKE_CASE |
-| React コンポーネントファイル | PascalCase（`ScoreForm.tsx`） |
-| hook / util ファイル | camelCase（`usePaginatedList.ts` / `formatDate.ts`） |
-| ディレクトリ | kebab-case |
-| 真偽値 | `is` / `has` プレフィックス（`isActive` / `hasPermission`）。DB カラムは `is_` |
+| 対象                         | 規約                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| クラス / コンポーネント / 型 | PascalCase                                                                     |
+| メソッド / 関数 / 変数       | camelCase                                                                      |
+| 定数                         | UPPER_SNAKE_CASE                                                               |
+| React コンポーネントファイル | PascalCase（`ScoreForm.tsx`）                                                  |
+| hook / util ファイル         | camelCase（`usePaginatedList.ts` / `formatDate.ts`）                           |
+| ディレクトリ                 | kebab-case                                                                     |
+| 真偽値                       | `is` / `has` プレフィックス（`isActive` / `hasPermission`）。DB カラムは `is_` |
 
 - enum は文字列ユニオン型 / `as const` を優先（[`app.md`](app.md)）
 
@@ -43,7 +43,7 @@
 > ORM / マイグレーションツール（Prisma or Drizzle）は ADR で選定予定。確定後にツール依存の細則を追記する。
 
 - テーブル名: **複数形・snake_case**（TODO: 単複方針を ADR と整合させ確定）
-- カラム: snake_case。日時 `_at` / 日付 `_on` / 真偽値 `is_` / 件数 `_count`
+- カラム: snake*case。日時 `_at` / 日付 `_on` / 真偽値 `is*`/ 件数`\_count`
 - インデックス: `idx_{table}_{columns}`
 - FK: `fk_{table}_{ref}`
 - unique: `uniq_{table}_{columns}`
@@ -60,19 +60,19 @@
 
 - DB カラム: `report_id` / `user_id`
 - TypeScript 変数 / JSON キー: `reportId` / `userId`
-- 環境変数: `UPPER_SNAKE`（`DATABASE_URL` / `ANTHROPIC_API_KEY`）
+- 環境変数: `UPPER_SNAKE`（`DATABASE_URL` / `AUTH_SECRET`）
 
 ## 7. 用語統一表（スケルトン）
 
 > TODO: reader-eval（リーダー研修 評価システム）の業務用語を確定する。要件定義の用語集に基づき、以下の表を埋める。
 
-| 用語 | 採用 | 採用しない | 英語 / DB 値 | 備考 |
-| --- | --- | --- | --- | --- |
-| （評価対象者） | TODO | — | TODO | — |
-| （評価者） | TODO | — | TODO | — |
-| （研修） | TODO | — | TODO | — |
-| （評価 / スコア） | TODO | — | TODO | — |
-| reader-eval | reader-eval | TODO | — | プロジェクト名、表記固定（TODO: 日本語名「リーダー研修 評価システム」の正式表記） |
+| 用語              | 採用        | 採用しない | 英語 / DB 値 | 備考                                                                              |
+| ----------------- | ----------- | ---------- | ------------ | --------------------------------------------------------------------------------- |
+| （評価対象者）    | TODO        | —          | TODO         | —                                                                                 |
+| （評価者）        | TODO        | —          | TODO         | —                                                                                 |
+| （研修）          | TODO        | —          | TODO         | —                                                                                 |
+| （評価 / スコア） | TODO        | —          | TODO         | —                                                                                 |
+| reader-eval       | reader-eval | TODO       | —            | プロジェクト名、表記固定（TODO: 日本語名「リーダー研修 評価システム」の正式表記） |
 
 ### 7.1 廃止語（使用禁止）
 
