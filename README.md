@@ -62,6 +62,8 @@ npm run dev
 
 > `.env*` は Git 管理対象外・Claude からの読み取り禁止（[`.claude/settings.json`](.claude/settings.json) で deny 済み）。
 
+> **認証（M365 / Entra ID SSO）**: ログインを動かすには Entra アプリ登録と `AZURE_AD_TENANT_ID` / `AZURE_AD_CLIENT_ID` / `AZURE_AD_CLIENT_SECRET` / `AUTH_SECRET` が必要です。手順は [`docs/runbooks/auth-entra-id.md`](docs/runbooks/auth-entra-id.md) を参照（`AUTH_SECRET` は `openssl rand -base64 32` で生成）。本番は起動時に認証 env を検証し fail-fast します。
+
 ---
 
 ## 主要コマンド

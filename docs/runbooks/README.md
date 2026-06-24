@@ -27,6 +27,13 @@ DB（[`../db/README.md`](../db/README.md)）のバックアップとリストア
 - [ ] 監視からの定期ポーリング設定（間隔・タイムアウト・通知先）
 - [ ] DB 疎通を含む拡張（Issue #5 の DB 基盤導入後）
 
+## 認証（M365 / Entra ID SSO）
+
+ログインの Entra アプリ登録・環境変数・起動時 fail-fast・`trustHost` の前提。
+
+- 手順: [`auth-entra-id.md`](auth-entra-id.md)
+- 必要 env: `AZURE_AD_TENANT_ID` / `AZURE_AD_CLIENT_ID` / `AZURE_AD_CLIENT_SECRET` / `AUTH_SECRET`（[`config.md`](../../.claude/rules/config.md)）
+
 ## インシデント初動
 
 障害検知時の初動フロー。
