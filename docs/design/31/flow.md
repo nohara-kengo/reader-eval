@@ -33,7 +33,3 @@ flowchart LR
 
 - 本 Issue の認可は「認証済みか否か」のみ（Entra グループ → アプリロール変換は後続 Issue / `authz.md` §3）。
 - `/`（トップ）は公開。`/dashboard` を保護対象とする。`/login` は未認証向け（認証済みでアクセスしたら `/dashboard` へ寄せる）。
-
-```
-
-```

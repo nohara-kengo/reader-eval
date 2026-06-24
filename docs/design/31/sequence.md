@@ -74,7 +74,3 @@ sequenceDiagram
 - **コールバック失敗 / state 不一致 / トークン交換失敗**: Auth.js のエラーページ（`/api/auth/error`）または `/login?error=...` へ誘導。文言は技術詳細を出さない（`error-message.md` §3.4）。詳細はサーバログのみ（`logging.md` §5）。
 - **設定不備（env 欠落）**: 起動時バリデーションで fail-fast（`config.md` §3）。
 - **相関 ID**: 入口で `x-request-id` を発番/踏襲しログに付与（`logging.md` §3.1）。
-
-```
-
-```

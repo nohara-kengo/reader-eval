@@ -38,7 +38,3 @@
 - **env キー名の整合**: 既存 `.env.example` は `AZURE_AD_TENANT_ID` / `AZURE_AD_CLIENT_ID` / `AZURE_AD_CLIENT_SECRET`。Auth.js の Entra プロバイダ規約（`AUTH_MICROSOFT_ENTRA_ID_*`）と既存キーのどちらを正にするか実装時に統一する（`config.md` の主要キー表も更新）。
 - **前提（ブロッカー）**: Entra アプリ登録（リダイレクト URI `${APP_BASE_URL}/api/auth/callback/microsoft-entra-id` を含む）と実資格情報。未確定の「M365 SSO 利用可否」（要件 6章）の確定後に実ログイン検証が可能。
 - DB（Prisma）への user/セッション永続化は本 Issue では行わない（JWT Cookie セッション）。DB アダプタ採用は後続 Issue で検討。
-
-```
-
-```
