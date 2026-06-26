@@ -52,4 +52,10 @@ describe("createGradeSchema", () => {
       "表示順は0以上の整数で入力してください",
     );
   });
+
+  it("表示順が32bit整数の上限を超える場合はエラー（DBオーバーフロー防止）", () => {
+    expect(
+      fieldErrors({ code: "R", name: "R クラス", sortOrder: "9999999999" }).sortOrder,
+    ).toContain("表示順は2147483647以下で入力してください");
+  });
 });
