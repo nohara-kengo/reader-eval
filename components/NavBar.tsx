@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/users", label: "ユーザー管理" },
   { href: "/organizations", label: "組織管理" },
   { href: "/grades", label: "等級管理" },
+  { href: "/evaluation-axes", label: "評価軸管理" },
 ] as const;
 
 // ヘッダー内のメニューバー。現在のパスに一致する項目をアクティブ表示する。
