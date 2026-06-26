@@ -66,4 +66,20 @@ describe("LoginPage", () => {
     );
     expect(screen.queryByText(/OAuthCallbackError/)).not.toBeInTheDocument();
   });
+
+  it("error=AccessDenied のとき許可リスト未登録向けの文言を表示する", async () => {
+    authMock.mockResolvedValue(null);
+
+    render(
+      await LoginPage({
+        searchParams: Promise.resolve({ error: "AccessDenied" }),
+      }),
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "許可されたユーザーではありません。管理者にお問い合わせください。",
+    );
+    // 内部のエラー種別は出さない（error-message.md §3.4）
+    expect(screen.queryByText(/AccessDenied/)).not.toBeInTheDocument();
+  });
 });

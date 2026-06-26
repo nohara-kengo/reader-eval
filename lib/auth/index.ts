@@ -1,33 +1,19 @@
 import NextAuth from "next-auth";
-import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
-import { entraIssuer, readAuthEnv } from "@/lib/auth/config";
+import { baseAuthConfig } from "@/lib/auth/base";
+import { extractEmail, isAllowedUser } from "@/lib/auth/allowlist";
+import { db } from "@/lib/db";
 
-// 認証設定は lib/auth に集約する（app.md §認証）。シークレットはサーバ側のみで参照する。
-const { config } = readAuthEnv();
-
+// full 認証設定（Node ランタイム）。base 設定に DB 照合を伴う signIn コールバックを合成する。
+// middleware（Edge）は base 設定のみを使う（lib/auth/base.ts / NextAuth v5 split-config）。
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  // オンプレ（Coolify / Cloudflare Tunnel）配下で動かすため信頼ホストを有効化する。
-  trustHost: true,
-  secret: config.AUTH_SECRET,
-  // DB アダプタは使わず JWT Cookie セッションとする（本 Issue では永続化しない）。
-  session: { strategy: "jwt" },
-  // サインイン・エラーともに /login に集約し、技術詳細を出さず日本語で扱う（error-message.md）。
-  pages: { signIn: "/login", error: "/login" },
-  providers: [
-    MicrosoftEntraID({
-      clientId: config.AZURE_AD_CLIENT_ID,
-      clientSecret: config.AZURE_AD_CLIENT_SECRET,
-      issuer: entraIssuer(config.AZURE_AD_TENANT_ID),
-    }),
-  ],
+  ...baseAuthConfig,
   callbacks: {
-    // 保護ルートの既定拒否ガード（authz.md §4・§7）。/dashboard は認証必須。
-    authorized({ request, auth }) {
-      const { pathname } = request.nextUrl;
-      if (pathname.startsWith("/dashboard")) {
-        return Boolean(auth);
-      }
-      return true;
+    ...baseAuthConfig.callbacks,
+    // SSO 認証成立後、アプリ DB の許可リストに該当があればログイン許可、なければ拒否する（既定拒否 / authz.md §5）。
+    // false を返すと NextAuth は pages.error(/login) へ ?error=AccessDenied を付けて誘導する（セッションは発行されない）。
+    async signIn({ user, profile }) {
+      const email = extractEmail(user, profile);
+      return isAllowedUser(db, email);
     },
   },
 });
