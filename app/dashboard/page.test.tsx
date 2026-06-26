@@ -13,6 +13,8 @@ vi.mock("@/lib/auth", () => ({
 }));
 vi.mock("next/navigation", () => ({
   redirect: (path: string) => redirectMock(path),
+  // AppHeader 配下の NavBar が usePathname を使うためモックする
+  usePathname: () => "/dashboard",
 }));
 
 const { default: DashboardPage } = await import("@/app/dashboard/page");
