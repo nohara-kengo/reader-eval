@@ -6,12 +6,11 @@ export const metadata: Metadata = {
   description: "リーダー研修 評価システム",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      {/* ブラウザ拡張機能が body に属性を注入する場合のハイドレーション警告を抑止する */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

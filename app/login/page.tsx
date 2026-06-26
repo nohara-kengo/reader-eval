@@ -3,10 +3,14 @@ import { HealthCheck } from "@/features/health/components/HealthCheck";
 import { auth, signIn } from "@/lib/auth";
 
 // Auth.js のサインインエラー種別をユーザー向け日本語へ。
-// 内部事情（種別・スタック等）は出さず、汎用文言＋再試行案内に統一する（error-message.md §3.4/§3.5）。
+// 内部事情（種別・スタック等）は出さず、規約形の日本語に統一する（error-message.md §3.4/§3.5）。
 function loginErrorMessage(error?: string): string | null {
   if (!error) {
     return null;
+  }
+  // 許可リスト未登録（signIn コールバックが false）は AccessDenied で戻る。
+  if (error === "AccessDenied") {
+    return "許可されたユーザーではありません。管理者にお問い合わせください。";
   }
   return "サインインに失敗しました。時間をおいて再度お試しください。";
 }
