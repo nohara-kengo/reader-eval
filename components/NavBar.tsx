@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/dashboard", label: "ダッシュボード" },
   { href: "/users", label: "ユーザー管理" },
+  { href: "/grades", label: "等級管理" },
 ] as const;
 
 // ヘッダー内のメニューバー。現在のパスに一致する項目をアクティブ表示する。

@@ -43,3 +43,17 @@ model AuditLog {
   @@index([occurredAt])
   @@map("audit_logs")
 }
+
+// 評価対象者の区分（等級）マスタ。R / M / S クラス等を管理する（要件 G-03）。
+// code は一意。一覧は有効を先頭に sort_order 昇順 → code 昇順で並べる。
+model Grade {
+  id        BigInt   @id @default(autoincrement())
+  code      String   @unique
+  name      String
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("grades")
+}
