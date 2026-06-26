@@ -12,6 +12,56 @@ const allowedUsers = [
   "kengo-nohara@comthink.co.jp",
 ];
 
+// 評価軸カテゴリと配下の評価項目の初期データ（要件 B-03）。
+// 4 カテゴリ（資格 / 技術力 / リーダーシップ / その他）× 各 4 評価項目。
+// code はカテゴリ単位で一意（カテゴリ code をプレフィックスにし重複を避ける）。
+const evaluationAxes = [
+  {
+    code: "QUAL",
+    name: "資格",
+    sortOrder: 1,
+    items: [
+      { code: "QUAL-01", name: "基本情報技術者", sortOrder: 1 },
+      { code: "QUAL-02", name: "応用情報技術者", sortOrder: 2 },
+      { code: "QUAL-03", name: "クラウド認定資格（AWS/Azure 等）", sortOrder: 3 },
+      { code: "QUAL-04", name: "プロジェクトマネジメント資格（PMP 等）", sortOrder: 4 },
+    ],
+  },
+  {
+    code: "TECH",
+    name: "技術力",
+    sortOrder: 2,
+    items: [
+      { code: "TECH-01", name: "設計力", sortOrder: 1 },
+      { code: "TECH-02", name: "実装力", sortOrder: 2 },
+      { code: "TECH-03", name: "コードレビュー", sortOrder: 3 },
+      { code: "TECH-04", name: "技術選定・アーキテクチャ", sortOrder: 4 },
+    ],
+  },
+  {
+    code: "LEAD",
+    name: "リーダーシップ",
+    sortOrder: 3,
+    items: [
+      { code: "LEAD-01", name: "チームマネジメント", sortOrder: 1 },
+      { code: "LEAD-02", name: "意思決定", sortOrder: 2 },
+      { code: "LEAD-03", name: "育成・コーチング", sortOrder: 3 },
+      { code: "LEAD-04", name: "ビジョン共有", sortOrder: 4 },
+    ],
+  },
+  {
+    code: "GROWTH",
+    name: "その他（伸びしろ系項目）",
+    sortOrder: 4,
+    items: [
+      { code: "GROWTH-01", name: "学習意欲", sortOrder: 1 },
+      { code: "GROWTH-02", name: "主体性", sortOrder: 2 },
+      { code: "GROWTH-03", name: "課題発見力", sortOrder: 3 },
+      { code: "GROWTH-04", name: "適応力", sortOrder: 4 },
+    ],
+  },
+];
+
 async function main() {
   // 許可ユーザーを upsert（冪等。再実行で重複・上書き事故を起こさない。db.md §4）
   for (const email of allowedUsers) {
@@ -20,6 +70,28 @@ async function main() {
       update: {},
       create: { email },
     });
+  }
+
+  // 評価軸カテゴリと評価項目を upsert（冪等。code 一意制約で重複・上書き事故を防ぐ。db.md §4）
+  for (const axis of evaluationAxes) {
+    const category = await prisma.evaluationAxisCategory.upsert({
+      where: { code: axis.code },
+      update: {},
+      create: { code: axis.code, name: axis.name, sortOrder: axis.sortOrder },
+    });
+    for (const item of axis.items) {
+      await prisma.evaluationItem.upsert({
+        // カテゴリ内 code の複合一意キーで冪等にする（再実行で重複しない）
+        where: { categoryId_code: { categoryId: category.id, code: item.code } },
+        update: {},
+        create: {
+          categoryId: category.id,
+          code: item.code,
+          name: item.name,
+          sortOrder: item.sortOrder,
+        },
+      });
+    }
   }
 
   // 監査ログのサンプル（冪等にするため件数で制御）
