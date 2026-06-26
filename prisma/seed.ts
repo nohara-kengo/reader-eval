@@ -12,6 +12,14 @@ const allowedUsers = [
   "kengo-nohara@comthink.co.jp",
 ];
 
+// 組織（部署）マスタの初期データ（Epic #57）。code は一意・表示順で並べる。
+const organizations = [
+  { code: "PTU", name: "PTU部", sortOrder: 1 },
+  { code: "SRU", name: "SRU部", sortOrder: 2 },
+  { code: "R", name: "R部", sortOrder: 3 },
+  { code: "VUC", name: "VUC部", sortOrder: 4 },
+];
+
 async function main() {
   // 許可ユーザーを upsert（冪等。再実行で重複・上書き事故を起こさない。db.md §4）
   for (const email of allowedUsers) {
@@ -19,6 +27,15 @@ async function main() {
       where: { email },
       update: {},
       create: { email },
+    });
+  }
+
+  // 組織マスタを upsert（冪等。code 一意制約で重複・上書き事故を防ぐ。db.md §4）
+  for (const org of organizations) {
+    await prisma.organization.upsert({
+      where: { code: org.code },
+      update: {},
+      create: org,
     });
   }
 
