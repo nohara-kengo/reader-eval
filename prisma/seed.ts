@@ -12,6 +12,14 @@ const allowedUsers = [
   "kengo-nohara@comthink.co.jp",
 ];
 
+// 組織（部署）マスタの初期データ（Epic #57）。code は一意・表示順で並べる。
+const organizations = [
+  { code: "PTU", name: "PTU部", sortOrder: 1 },
+  { code: "SRU", name: "SRU部", sortOrder: 2 },
+  { code: "R", name: "R部", sortOrder: 3 },
+  { code: "VUC", name: "VUC部", sortOrder: 4 },
+];
+
 // 評価軸カテゴリと配下の評価項目の初期データ（要件 B-03）。
 // 4 カテゴリ（資格 / 技術力 / リーダーシップ / その他）× 各 4 評価項目。
 // code はカテゴリ単位で一意（カテゴリ code をプレフィックスにし重複を避ける）。
@@ -92,6 +100,15 @@ async function main() {
         },
       });
     }
+  }
+
+  // 組織マスタを upsert（冪等。code 一意制約で重複・上書き事故を防ぐ。db.md §4）
+  for (const org of organizations) {
+    await prisma.organization.upsert({
+      where: { code: org.code },
+      update: {},
+      create: org,
+    });
   }
 
   // 監査ログのサンプル（冪等にするため件数で制御）
